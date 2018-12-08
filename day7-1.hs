@@ -31,7 +31,7 @@ parseReq = do
   id <- anyChar
   string " can begin."
   endOfLine
-  return $ Req (ID id) [(ID dependsOn)]
+  return $ Req (ID id) [ID dependsOn]
 
 parseReqs:: Parser [Requirement]
 parseReqs = many1 parseReq
@@ -42,11 +42,11 @@ allIds = foldr (union . getDeps) empty where
 
 startTasks:: Set Requirement -> Set ID
 startTasks r = foldr removeDeps (allIds r) r where
-  removeDeps (Req id dependsOn) s =  s \\ (singleton id)
+  removeDeps (Req id dependsOn) s =  s \\ singleton id
 
 mergeDeps:: [Requirement] -> Set Requirement
 mergeDeps reqs = foldr collectDeps empty $ groupBy ((==) `on` rId) $ sort reqs where
-  collectDeps l@((Req id deps):rs) s = insert (Req id (sort $ concatMap rDependsOn l)) s
+  collectDeps l@(Req id deps:rs) = insert (Req id (sort $ concatMap rDependsOn l))
 
 satisfiedReqs:: Set Requirement -> Set ID -> Set Requirement
 satisfiedReqs reqs sats = filter reqsMet reqs where
@@ -62,7 +62,7 @@ topoSort reqs = go reqs startTs (toList startTs)  where
                                           go (reqs \\ newSatisfied) (satisfied `union` satisfiedIds) (order ++ toAscList satisfiedIds)
 
 addEmptyReqs:: Set Requirement -> Set Requirement
-addEmptyReqs s = union emptyTasks s where
+addEmptyReqs s = emptyTasks `union` s where
   emptyTasks = map (\id -> Req id []) (startTasks s)
 
 main:: IO ()
@@ -70,5 +70,5 @@ main = do
   lines <- getContents
   case parseOnly parseReqs lines of
     Left error -> print error
-    Right reqs -> do
+    Right reqs ->
       print $ fmap (\(ID a) -> a) $ topoSort $ addEmptyReqs $ mergeDeps reqs
