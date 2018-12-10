@@ -26,6 +26,7 @@ dependencies:
 - attoparsec
 - text
 - pretty-simple
+- hashable
 
 library:
   source-dirs: .
