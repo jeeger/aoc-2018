@@ -25,6 +25,7 @@ dependencies:
 - containers
 - attoparsec
 - text
+- formatting
 - pretty-simple
 - hashable
 
