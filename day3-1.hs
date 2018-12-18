@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
 import Data.Attoparsec.Text(Parser, decimal, char, space, endOfLine, many1, parseOnly)
@@ -79,7 +78,7 @@ cy2:: Claim -> Int
 cy2 c = cy c + cysize c - 1
 
 unmarked :: Int -> Tapestry
-unmarked size = Tapestry $ M.empty
+unmarked size = Tapestry M.empty
 
 markClaim :: Tapestry -> Claim -> Tapestry
 markClaim (Tapestry m) c = Tapestry $ M.unionWith merge m (M.fromList [((x,y), Covered) | x <- [(cx c)..(cx2 c)], y <- [(cy c)..(cy2 c)]]) where
