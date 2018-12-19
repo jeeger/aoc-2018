@@ -28,6 +28,7 @@ dependencies:
 - formatting
 - pretty-simple
 - hashable
+- transformers
 
 library:
   source-dirs: .
